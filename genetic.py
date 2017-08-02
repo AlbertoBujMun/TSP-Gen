@@ -24,7 +24,10 @@ cities =[]
 class City(object):
     
     def __init__(self, name, reach):
-        # Name and coordinates:
+        """ nombre y lista de pesos con todas las ciudades de la lista. ej: new City(Ciudad1, [0.0, 1.0,1.3,9.1]) En un ejemplo donde habrá
+        4 ciudades distintas. A sí misma tiene siempre recorrido 0. No importa porque los recorridos serán aleatorios. De ser un problema
+        de búsqueda, habría que organizarlo de otra forma."""
+        
         self.name = name
         """reach es una lista de nombres. Ciudades a las que podrá ir. Es más fácil que añadirle ciudades directamente porque
         habría que hacer que cada ciudad nueva que creas compruebe a donde puede llegar y actualizar el resto"""
@@ -49,18 +52,16 @@ def decode_traveler(individual):
     return dec
     
     
-"""fitness de la función. Va maximizando así que las penalizaciones restan"""
+"""fitness de la función. Hay que miniminar el coste. TODO pensar en como calcular esto.(ready to test)"""
 def fitness_traveler(individual):
     dec = decode_traveler(individual)
     sol=0
     
     for i in range(len(dec)):  
-        if(i==0 or i==len(dec)):  
-            if not dec[0].name in dec[len(dec)-1].reach:
-                sol = sol - 1
+        if(i==len(dec)-1):  
+           sol = sol + cities[i].reach[0]
         else:
-            if not dec[i].name in dec[i-1].reach:
-                sol = sol - 1
+            sol = sol + cities[i].reach[i+1]
     
     return sol
     
