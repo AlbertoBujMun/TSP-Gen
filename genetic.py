@@ -6,6 +6,7 @@ Created on Thu Jan 26 21:17:56 2017
 """
 
 import random
+from itertools import chain
 
 
 """para crear cada cromosoma individual"""
@@ -91,6 +92,7 @@ def selection(population):
             part[x] = sort_pop[x]
     return part
     
+	
 """la población debe ser mayor a 1"""    
 def select_individual_crossover(population):
     
@@ -110,7 +112,43 @@ def select_individual_crossover(population):
            
        inds = (ind1, ind2)
        return inds
+	   
+	   
+"""mutación de orden es la más adecuada para este problema.
+Se cogen dos genes(ciudades) y se coloca uno delante del otro
+mirar este artículo: http://www.permutationcity.co.uk/projects/mutants/tsp.html"""
+
+def order_mutation(individual):
    
+    condition = True
+    
+    while condition:
+        a = random.randint (0, len(individual)-1)
+        b = random.randint (0, len(individual)-1)
+        condition = (a == b)
+	
+	new_individual = list(chain(individual[0:a], [individual[b]], individual[a:len(individual)-1]))
+    
+    return new_individual
+	
+	
+"""Aplica lo mismo que con la mutación. La razón y explicación en el mismo artículo"""
+#TODO hay que revisar que funcione correctamente
+
+def order_crossover(ind1, ind2):
+    
+    repeat = True
+    
+    while repeat:
+        crosspoint = random.randint(0, len(ind1)-1)
+        child = ind2[:crosspoint]+ind1[crosspoint:]
+        if set(ind1) == set(child):
+            repeat = False
+  
+    return child
+
+
+ """No se usará este tipo de mutación"""
 def swap_mutation(individual):
    
     condition = True
@@ -124,7 +162,7 @@ def swap_mutation(individual):
     
     return individual
     
-    
+ """No se usará este tipo de mutación"""
 def insert_mutation(individual):
     
     condition = True
@@ -152,17 +190,7 @@ def mutate_population(population, chance):
     return new_population
 
 
-def order_crossover(ind1, ind2):
-    
-    repeat = True
-    
-    while repeat:
-        crosspoint = random.randint(0, len(ind1)-1)
-        child = ind2[:crosspoint]+ind1[crosspoint:]
-        if set(ind1) == set(child):
-            repeat = False
-  
-    return child
+
     
     
 def evolve(population, chance):
@@ -216,46 +244,4 @@ def genetic_prob(ages, pop_size, mut_chance, cities):
         result[i] = s_dec[i].name
     
     return {'population' : pop, 'grades' : grade, 'result' : result}
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
+   
