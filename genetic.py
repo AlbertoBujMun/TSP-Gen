@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
 Created on Thu Jan 26 21:17:56 2017
 
@@ -8,6 +9,8 @@ Created on Thu Jan 26 21:17:56 2017
 import random
 from itertools import chain
 
+testnum = 0
+
 
 """para crear cada cromosoma individual"""
 def individual(length):
@@ -15,7 +18,10 @@ def individual(length):
 
 """crea una nueva población con cromosomas de longitud 'length' y con 'count' número de cromosomas"""
 def population(length, count):
-    return [ individual(length) for x in range(count) ]    
+    pop = [ individual(length) for x in range(count) ]
+    print('POBLACIÓN INICIAL:')
+    print(pop)
+    return pop
     
 
 """nuestras ciudades y la lista de todas. según creemos ciudades, se añadirán a la lista"""
@@ -58,11 +64,14 @@ def fitness_traveler(individual):
 	sol=0
 	for i in range(len(dec)):
 		if(i==len(dec)-1):
-			sol = sol + cities[i].reach[cities[0].name]
-		elif(cities[i].reach[cities[i+1].name] is None):
+			sol = sol + dec[i].reach[dec[0].name]
+		elif(dec[i].reach[dec[i+1].name] is None):
 			sol = sol + 999999*999999
 		else:
-			sol = sol + cities[i].reach[cities[i+1].name]
+			sol = sol + dec[i].reach[dec[i+1].name]
+			
+	print('FITNESS DE INDIVIDUO')
+	print(sol)
 	return sol
 
 
@@ -74,20 +83,24 @@ def grade_traveler(population):
     for i in range(len(population)):
         sum = sum + fitness_traveler(population [i])
     sum = sum/len(population)
+    print('NOTA DE POBLACIÓN'+ str(testnum) +':')
+    print(sum)
     return sum
 """
 hacemos selección de individuos que van a la siguiente generación. Yo he puesto de coger 1/5 de cada generación. Los mejores solo. 
-Creo que con eso ya va bien.
+Creo que con eso ya va bien. Si el corte sale 0 o 1, pasan 2 mínimo.
 """    
 def selection(population):
     pop_len=len(population)
-    cut = round(pop_len/5)
+    cut = int(round(pop_len/5))
+    if(cut<=1):
+      cut=2
     part = [None]*cut
     fitnesses = [None]*pop_len
     for i in range(pop_len):
         fitnesses[i] = fitness_traveler(population[i])
     all = list(zip(fitnesses, population))
-    all.sort(key=lambda tup: tup[0], reverse=True)
+    all.sort(key=lambda tup: tup[0], reverse=False)
     sort_pop = [x[1] for x in all]
     for x in range(cut):
         if(x<cut):
@@ -122,16 +135,46 @@ mirar este artículo: http://www.permutationcity.co.uk/projects/mutants/tsp.html
 
 def order_mutation(individual):
    
-	condition = True
-    
-	while condition:
-		a = random.randint (0, len(individual)-1)
-		b = random.randint (0, len(individual)-1)
-		condition = (a == b)
+  condition = True
+  while condition:
+	  a = random.randint (0, len(individual)-1)
+	  print('SE LIA A:')
+	  print(a)
+	  b = random.randint (0, len(individual)-1)
+	  print('SE LIA B:')
+	  print(b)
+	  condition = (a == b or a>b)
 	
-	new_individual = list(chain(individual[0:a], [individual[b]], individual[a:len(individual)-1]))
+  print('INDIVIDUAL ANTES')
+  print(individual)
+  part1 = individual[0:a]
+  part2 = individual[b]
+  part3 = individual[a]
+  part4 = individual[a+1:b]
+  part5 = individual[b+1:len(individual)]
+  
     
-	return new_individual
+  new_individual = []
+  
+  if(len(part1)!=0):
+    if(len(part1)==1):
+      new_individual.append(part1[0])
+    else:
+      new_individual.append(part1)
+  new_individual.append(part2)
+  new_individual.append(part3)
+  if(len(part4)!=0):
+    if(len(part4)==1):
+      new_individual.append(part4[0])
+    else:
+      new_individual.append(part4)
+  if(len(part5)!=0):
+    if(len(part5)==1):
+      new_individual.append(part5[0])
+    else:
+      new_individual.append(part5)
+
+  return new_individual
 	
 	
 """Aplica lo mismo que con la mutación. La razón y explicación en el mismo artículo"""
@@ -149,37 +192,6 @@ def order_crossover(ind1, ind2):
   
     return child
 
-
- """No se usará este tipo de mutación"""
-def swap_mutation(individual):
-   
-    condition = True
-    
-    while condition:
-        a = random.randint (0, len(individual)-1)
-        b = random.randint (0, len(individual)-1)
-        condition = (a == b)
-    
-    individual[a], individual[b] = individual[b], individual[a]
-    
-    return individual
-    
- """No se usará este tipo de mutación"""
-def insert_mutation(individual):
-    
-    condition = True
-    
-    while condition:
-        a = random.randint (0, len(individual)-1)
-        b = random.randint (0, len(individual)-1)
-        condition = (a == b)
-    
-    temp_elem = individual[b]
-    individual.remove(individual[b])
-    individual.insert(individual[a+1], temp_elem)
-    
-    return individual
-    
 def mutate_population(population, chance):
     new_population = []
     for i in population:
@@ -207,8 +219,12 @@ def evolve(population, chance):
         individual = order_crossover(p1, p2)
         new_part[i] = individual
     res = part + new_part
+    print('MUTACIONEEEEEEEEEEEEEEEEES')
+    print('ANTES')
+    print(res)
     res = mutate_population(res, chance)
-    
+    print('DESPUES')
+    print(res)
     return res
     
 def most_suited(population):
@@ -227,23 +243,28 @@ def most_suited(population):
 
 def genetic_prob(ages, pop_size, mut_chance, cities):
     
-    c_len = len(cities)
-    
-    pop = population(c_len, pop_size)
-    
-    grade = [None]*ages
-    
-    for i in range(ages):
-        grade[i] = grade_traveler(pop)
-        pop = evolve(pop, mut_chance)
-    
-    suited = most_suited(pop)
-    
-    result = [None]*c_len
-    s_dec = decode_traveler(suited)
-    
-    for i in range(c_len):
-        result[i] = s_dec[i].name
-    
-    return {'population' : pop, 'grades' : grade, 'result' : result}
+    if(pop_size>1):
+      c_len = len(cities)
+      
+      pop = population(c_len, pop_size)
+      
+      grade = [None]*ages
+      
+      for i in range(ages):
+          grade[i] = grade_traveler(pop)
+          pop = evolve(pop, mut_chance)
+          print('EVOLUSAO')
+          print(pop)
+      
+      suited = most_suited(pop)
+      
+      result = [None]*c_len
+      s_dec = decode_traveler(suited)
+      
+      for i in range(c_len):
+          result[i] = s_dec[i].name
+      
+      return {'population' : pop, 'grades' : grade, 'result' : result}
+    else:
+      print('THE POPULATION NEEDS TO BE AT LEAST 2. OTHERWISE, IT WILL WITHER AND DIE AS THE DINOSAURS DID.')
    
