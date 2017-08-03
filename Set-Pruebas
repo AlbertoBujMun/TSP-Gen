@@ -4,4 +4,4 @@ City('Sevilla', {'Córdoba': 1.0,'Málaga': 91230.0})
 City('Córdoba', {'Sevilla': 1.0,'Málaga': 2.0})
 City('Málaga', {'Sevilla': 1.0,'Córdoba': 91230.0})
 
-genetic_prob(40, 10, 0.05, cities)
+genetic_prob(10, 3, 0.05, cities)
