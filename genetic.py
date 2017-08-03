@@ -25,9 +25,7 @@ cities =[]
 class City(object):
     
     def __init__(self, name, reach):
-        """ nombre y lista de pesos con todas las ciudades de la lista. ej: new City(Ciudad1, [0.0, 1.0,1.3,9.1]) En un ejemplo donde habrá
-        4 ciudades distintas. A sí misma tiene siempre recorrido 0. No importa porque los recorridos serán aleatorios. De ser un problema
-        de búsqueda, habría que organizarlo de otra forma."""
+        """ Nombre de la ciudad y diccionario con otras ciudades y la distancia a la que se encuentran estas. """
         
         self.name = name
         """reach es una lista de nombres. Ciudades a las que podrá ir. Es más fácil que añadirle ciudades directamente porque
@@ -53,18 +51,22 @@ def decode_traveler(individual):
     return dec
     
     
-"""fitness de la función. Hay que miniminar el coste. TODO pensar en como calcular esto.(ready to test)"""
+"""fitness de la función. Hay que miniminar el coste. TODO pensar en como calcular esto.(ready to test). TODO modificar para los nuevos diccionarios."""
+
 def fitness_traveler(individual):
-    dec = decode_traveler(individual)
-    sol=0
-    
-    for i in range(len(dec)):  
-        if(i==len(dec)-1):  
-           sol = sol + cities[i].reach[0]
-        else:
-            sol = sol + cities[i].reach[i+1]
-    
-    return sol
+	dec = decode_traveler(individual)
+	sol=0
+	for i in range(len(dec)):
+		if(i==len(dec)-1):
+			sol = sol + cities[i].reach[cities[0].name]
+		elif(cities[i].reach[cities[i+1].name] is None):
+			sol = sol + 999999*999999
+		else:
+			sol = sol + cities[i].reach[cities[i+1].name]
+	return sol
+
+
+
     
 """con esto sacamos el fitness medio de cada generación, para ver la evolución"""    
 def grade_traveler(population):
@@ -120,16 +122,16 @@ mirar este artículo: http://www.permutationcity.co.uk/projects/mutants/tsp.html
 
 def order_mutation(individual):
    
-    condition = True
+	condition = True
     
-    while condition:
-        a = random.randint (0, len(individual)-1)
-        b = random.randint (0, len(individual)-1)
-        condition = (a == b)
+	while condition:
+		a = random.randint (0, len(individual)-1)
+		b = random.randint (0, len(individual)-1)
+		condition = (a == b)
 	
 	new_individual = list(chain(individual[0:a], [individual[b]], individual[a:len(individual)-1]))
     
-    return new_individual
+	return new_individual
 	
 	
 """Aplica lo mismo que con la mutación. La razón y explicación en el mismo artículo"""
@@ -183,7 +185,7 @@ def mutate_population(population, chance):
     for i in population:
         if chance > random.random():
             if fitness_traveler(i) != 0:
-                new_population.append(swap_mutation(i))
+                new_population.append(order_mutation(i))
 #            new_population.append(insert_mutation[i])
         else:
             new_population.append(i)
@@ -215,7 +217,7 @@ def most_suited(population):
     for i in range(pop_len):
         fitnesses[i] = fitness_traveler(population[i])
     all = list(zip(fitnesses, population))
-    all.sort(key=lambda tup: tup[0], reverse=True)
+    all.sort(key=lambda tup: tup[0], reverse=False)
     sort_pop = [x[1] for x in all]
     suited = sort_pop[0]
 
