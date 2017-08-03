@@ -160,19 +160,19 @@ def order_mutation(individual):
     if(len(part1)==1):
       new_individual.append(part1[0])
     else:
-      new_individual.append(part1)
+      new_individual.extend(part1)
   new_individual.append(part2)
   new_individual.append(part3)
   if(len(part4)!=0):
     if(len(part4)==1):
       new_individual.append(part4[0])
     else:
-      new_individual.append(part4)
+      new_individual.extend(part4)
   if(len(part5)!=0):
     if(len(part5)==1):
       new_individual.append(part5[0])
     else:
-      new_individual.append(part5)
+      new_individual.extend(part5)
 
   return new_individual
 	
