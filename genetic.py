@@ -7,7 +7,8 @@ Created on Thu Jan 26 21:17:56 2017
 """
 
 import random
-from itertools import chain
+import time
+import math
 
 testnum = 0
 
@@ -19,8 +20,6 @@ def individual(length):
 """crea una nueva población con cromosomas de longitud 'length' y con 'count' número de cromosomas"""
 def population(length, count):
     pop = [ individual(length) for x in range(count) ]
-    print('POBLACIÓN INICIAL:')
-    print(pop)
     return pop
     
 
@@ -70,8 +69,6 @@ def fitness_traveler(individual):
 		else:
 			sol = sol + dec[i].reach[dec[i+1].name]
 			
-	print('FITNESS DE INDIVIDUO')
-	print(sol)
 	return sol
 
 
@@ -83,8 +80,6 @@ def grade_traveler(population):
     for i in range(len(population)):
         sum = sum + fitness_traveler(population [i])
     sum = sum/len(population)
-    print('NOTA DE POBLACIÓN'+ str(testnum) +':')
-    print(sum)
     return sum
 """
 hacemos selección de individuos que van a la siguiente generación. Yo he puesto de coger 1/5 de cada generación. Los mejores solo. 
@@ -138,15 +133,9 @@ def order_mutation(individual):
   condition = True
   while condition:
 	  a = random.randint (0, len(individual)-1)
-	  print('SE LIA A:')
-	  print(a)
 	  b = random.randint (0, len(individual)-1)
-	  print('SE LIA B:')
-	  print(b)
 	  condition = (a == b or a>b)
 	
-  print('INDIVIDUAL ANTES')
-  print(individual)
   part1 = individual[0:a]
   part2 = individual[b]
   part3 = individual[a]
@@ -219,12 +208,7 @@ def evolve(population, chance):
         individual = order_crossover(p1, p2)
         new_part[i] = individual
     res = part + new_part
-    print('MUTACIONEEEEEEEEEEEEEEEEES')
-    print('ANTES')
-    print(res)
     res = mutate_population(res, chance)
-    print('DESPUES')
-    print(res)
     return res
     
 def most_suited(population):
@@ -243,6 +227,8 @@ def most_suited(population):
 
 def genetic_prob(ages, pop_size, mut_chance, cities):
     
+    time_start = time.time()
+    
     if(pop_size>1):
       c_len = len(cities)
       
@@ -253,8 +239,6 @@ def genetic_prob(ages, pop_size, mut_chance, cities):
       for i in range(ages):
           grade[i] = grade_traveler(pop)
           pop = evolve(pop, mut_chance)
-          print('EVOLUSAO')
-          print(pop)
       
       suited = most_suited(pop)
       
@@ -263,8 +247,19 @@ def genetic_prob(ages, pop_size, mut_chance, cities):
       
       for i in range(c_len):
           result[i] = s_dec[i].name
+     
+      timer = time.time() - time_start
+              
+      hours = math.floor(timer/3600)
+      minutes = math.floor(timer/60) - hours*60
+      seconds = timer - minutes*60 - hours*3600
       
+      
+      timeStr = str(hours) + 'h ' +  str(minutes)+ 'm ' + str(seconds) + 's '
+              
+      print('algorithm finished in: ' + timeStr )
       return {'population' : pop, 'grades' : grade, 'result' : result}
     else:
-      print('THE POPULATION NEEDS TO BE AT LEAST 2. OTHERWISE, IT WILL WITHER AND DIE AS THE DINOSAURS DID.')
+      print('THE POPULATION NEEDS TO BE AT LEAST 2.')
+      
    
