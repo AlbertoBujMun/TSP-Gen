@@ -10,8 +10,6 @@ import random
 import time
 import math
 
-testnum = 0
-
 
 """para crear cada cromosoma individual"""
 def individual(length):
@@ -38,13 +36,6 @@ class City(object):
         self.reach= reach
         cities.append(self)
 
-    
-"""Otro método para mutar fácilmente aplicable y que podemos modificar. Usa el mutador de Problem_Genetic"""
-def mutate_individuals(problem_genetic, population, prob):
-    sol=[]
-    for j in range(0,len(population)):
-        sol.extend(problem_genetic.mutation(population[j],prob))
-    return sol
     
 
 """decode coge el cromosoma en forma de lista desordenada, y devuelve los elementos ordenados. Testeado y funcional"""
