@@ -50,17 +50,20 @@ def decode_traveler(individual):
 """fitness de la función. Hay que miniminar el coste. TODO pensar en como calcular esto.(ready to test). TODO modificar para los nuevos diccionarios."""
 
 def fitness_traveler(individual):
-	dec = decode_traveler(individual)
-	sol=0
-	for i in range(len(dec)):
-		if(i==len(dec)-1):
-			sol = sol + dec[i].reach[dec[0].name]
-		elif(dec[i].reach[dec[i+1].name] is None):
-			sol = sol + 999999*999999
-		else:
-			sol = sol + dec[i].reach[dec[i+1].name]
+    dec = decode_traveler(individual)
+    sol=0
+    for i in range(len(dec)):
+        if(i==len(dec)-1):
+            if(dec[0].name not in dec[i].reach):
+                sol = sol + 999999*999999
+            else:
+                sol = sol + dec[i].reach[dec[0].name] 
+        elif(dec[i+1].name not in dec[i].reach):
+            sol = sol + 999999*999999
+        else:
+            sol = sol + dec[i].reach[dec[i+1].name]
 			
-	return sol
+    return sol
 
 
 
