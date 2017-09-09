@@ -55,11 +55,11 @@ def fitness_traveler(individual):
     for i in range(len(dec)):
         if(i==len(dec)-1):
             if(dec[0].name not in dec[i].reach):
-                sol = sol + 999999*999999
+                sol = sol + 1000000
             else:
                 sol = sol + dec[i].reach[dec[0].name] 
         elif(dec[i+1].name not in dec[i].reach):
-            sol = sol + 999999*999999
+            sol = sol + 1000000
         else:
             sol = sol + dec[i].reach[dec[i+1].name]
 			
