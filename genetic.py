@@ -42,7 +42,7 @@ class City(object):
 def decode_traveler(individual):
     dec = [None]*len(cities)
     for i in range(len(individual)):
-        dec[individual[i]] = cities[i]
+        dec[individual[i]] = cities[individual[i]]
     
     return dec
     
@@ -161,7 +161,6 @@ def order_mutation(individual):
 	
 	
 """Aplica lo mismo que con la mutación. La razón y explicación en el mismo artículo"""
-#TODO hay que revisar que funcione correctamente
 
 def order_crossover(ind1, ind2):
     
