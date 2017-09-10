@@ -42,7 +42,7 @@ class City(object):
 def decode_traveler(individual):
     dec = [None]*len(cities)
     for i in range(len(individual)):
-        dec[individual[i]] = cities[individual[i]]
+        dec[i] = cities[individual[i]]
     
     return dec
     
