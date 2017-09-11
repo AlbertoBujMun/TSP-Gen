@@ -1,4 +1,4 @@
-﻿Usar esto en consola (en un futuro se leerá automáticamente)
+﻿
 
 City('Sevilla', {'Córdoba': 104.5,'Málaga': 204.8, 'Huelva':92.8, 'Cádiz':121.1,'Almería':412.4, 'Granada':249.7,'Jaén': 241.4})
 City('Córdoba', {'Sevilla': 104.5,'Málaga': 162.6, 'Huelva':238.5, 'Cádiz':265.1,'Almería':342.1, 'Granada':207.8,'Jaén': 108.1})
@@ -9,8 +9,4 @@ City('Almería', {'Sevilla': 412.4,'Córdoba': 342.1, 'Málaga':201.5, 'Huelva':
 City('Granada', {'Sevilla': 249.7,'Córdoba': 207.8, 'Málaga':126.5, 'Huelva':346.0,'Cádiz':292.8, 'Almería':167.6,'Jaén': 92.0})
 City('Jaén', {'Sevilla': 241.4,'Córdoba': 108.1, 'Málaga':203.7, 'Huelva':336.3,'Cádiz':324.8, 'Almería':224.5,'Granada': 92.0})
 
-sol = genetic_prob(5, 5, 0.1, cities)
-sol['result']
-sol['grades']
-fitness_traveler(most_suited(sol['population']))
 
